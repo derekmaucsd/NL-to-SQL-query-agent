@@ -34,4 +34,4 @@ def is_read_only_sql(sql_query: str) -> bool:
         return False
     if ";" in normalized:
         return False
-    return normalized.lower().startswith(("select ", "with "))
+    return re.match(r"^(select|with)\b", normalized, flags=re.IGNORECASE) is not None

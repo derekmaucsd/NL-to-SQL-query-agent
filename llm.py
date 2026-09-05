@@ -1,9 +1,15 @@
 import os
+import time
+from datetime import datetime, timezone
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from google import genai
 
 from config import ENV_PATH, MODEL_NAME
+
+if TYPE_CHECKING:
+    from tracing import TraceRecorder
 
 
 def load_env_file(env_path: Path = ENV_PATH) -> None:
@@ -32,9 +38,42 @@ def get_client() -> genai.Client:
     return genai.Client(api_key=api_key)
 
 
-def generate_text(client: genai.Client, prompt: str) -> str:
-    response = client.models.generate_content(
-        model=MODEL_NAME,
-        contents=prompt,
+def generate_text(
+    client: genai.Client,
+    prompt: str,
+    trace: "TraceRecorder | None" = None,
+    purpose: str = "generate_text",
+) -> str:
+    started_at = datetime.now(timezone.utc).isoformat(timespec="milliseconds").replace(
+        "+00:00", "Z"
     )
-    return response.text or ""
+    started_timer = time.perf_counter()
+    try:
+        response = client.models.generate_content(
+            model=MODEL_NAME,
+            contents=prompt,
+        )
+        response_text = response.text or ""
+    except Exception as exc:
+        if trace:
+            trace.record_llm_call(
+                name=purpose,
+                model=MODEL_NAME,
+                prompt=prompt,
+                response=None,
+                started_at=started_at,
+                started_timer=started_timer,
+                error=str(exc),
+            )
+        raise
+
+    if trace:
+        trace.record_llm_call(
+            name=purpose,
+            model=MODEL_NAME,
+            prompt=prompt,
+            response=response_text,
+            started_at=started_at,
+            started_timer=started_timer,
+        )
+    return response_text

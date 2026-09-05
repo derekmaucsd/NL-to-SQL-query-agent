@@ -6,3 +6,5 @@
 __pycache__/
 .env
 /adhoc.sql
+/traces/*.json
+!/traces/.gitkeep
