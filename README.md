@@ -1,6 +1,8 @@
-# nba-query-agent
+# Natural Language (NL) to SQL database querying agent
 
 ## Data
+
+This agent was built and tested against an NBA dataset, which is a naturally good example with both understandability and potential question depth.
 
 The NBA dataset is not stored in this GitHub repo because the SQLite database
 and CSV exports are large. Download the data locally from Kaggle:
