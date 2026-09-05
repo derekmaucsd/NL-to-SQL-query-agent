@@ -7,4 +7,5 @@ __pycache__/
 .env
 /adhoc.sql
 /traces/*.json
+!/traces/example_most_wins_single_season.json
 !/traces/.gitkeep

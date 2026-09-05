@@ -57,3 +57,8 @@ the run fails.
 
 Generated trace JSON files are ignored by Git because they can be large and may
 contain user questions or model inputs that should remain local.
+
+See [the example trace](traces/example_most_wins_single_season.json) for a real
+run answering which NBA team recorded the most wins in a single regular season.
+It shows the full prompt and SQL lifecycle, including recovery from a transient
+model error and the successful 73-win result for the 2015 Golden State Warriors.
